@@ -17,6 +17,9 @@ class Generator:
 
 	def generate_rel(self, number_set_element, number_rel_element):
 		self.generate_set(number_set_element)
+		if number_rel_element > number_set_element*number_set_element:
+			print("What do you from me :v")
+			return
 		while len(self.rel_data) < number_rel_element:
 			relation = (randint(1, number_set_element), randint(1, number_set_element))
 			hash_value = self.open_hash(relation)
@@ -28,9 +31,9 @@ class Generator:
 # This part is for user interact
 # var1 is the cardinality of set X
 # var2 is the cardinality of relation D on X
-var1 = raw_input('number of element: ')
+var1 = raw_input('Enter number of element in X (from 1 to 1000) : ')
 var1 = int(var1)
-var2 = raw_input('number of relation: ')
+var2 = raw_input('Enter number of element in  relation D (from 1 to 10^6) : ')
 var2 = int(var2)
 la = Generator()
 la.generate_rel(var1, var2)
