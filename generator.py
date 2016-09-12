@@ -50,4 +50,6 @@ if __name__ == '__main__':
 	charaters = gen.rel_data.values()
 	for char in charaters:
 		target.write(str(char))
+		target.write('\n')
+	target.close()
 
