@@ -37,11 +37,17 @@ class Generator:
 
 
 if __name__ == '__main__':
-	import sys
+	from sys import argv
+	script, filename = argv
 	var1 = raw_input('Enter number of element in X (from 1 to 1000) : ')
 	var1 = int(var1)
-	var2 = raw_input('Enter number of element in  relation D (from 1 to 10^6) : ')
+	var2 = raw_input("Enter number of element in  relation D (from 1 to 10^6) : ")
 	var2 = int(var2)
 	gen = Generator()
 	gen.generate_rel(var1, var2)
-	sys.stdout.write(str(gen.rel_data) + "\n")
+
+	target = open(filename, 'w')
+	charaters = gen.rel_data.values()
+	for char in charaters:
+		target.write(str(char))
+
