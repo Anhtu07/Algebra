@@ -6,20 +6,20 @@ class BinaryOperation:
 		self.size = 0
 
 	def generate_binary_opertion(self, filename, n):
-		#Create a binary operation table of with number of element n 
+		#Create a binary operation table of * with number of element n 
 		#The table of size n x n
 		#And save the table in the file 'filename'
-		#The table contains only integer form 1 to n
-		column = 1
-		row = 1
+		#The table contains only integer from 1 to n
+		column = 0
+		row = 0
 		target = open(filename, "w")
-		while row <= n: 
-			while column <= n:
-				target.write(str(randint(1, n)))
+		while row < n: 
+			while column < n:
+				target.write(str(randint(0, n-1)))
 				target.write(" ")
 				column = column + 1
 			target.write("\n")
-			column = 1
+			column = 0
 			row = row + 1
 		target.close()
 		self.size = n
@@ -45,15 +45,41 @@ class BinaryOperation:
 			self.operation_table.append(row)
 			c = c + 1
 
-	#def is_associative(self):
+	def is_associative(self):
 		#Check a binary opertation whether it is associative using Light's algorithm
+		#Return true if the operation is associative
+		#Return false and print out a triple that dissatisfies associative property
+		associative = True
+		n = self.size
+		for i in xrange(0,n):
+			subtable = self.create_subtable(i)
+			for x in xrange(0, n):
+				val = self.operation_table[x][i]
+				for m in xrange(0,n):
+					if subtable[x][m] != self.operation_table[val][m]:
+						result = [x, i, m]
+						print(result)
+						associative = False
+						break
+				if associative is False:
+					break
+			if associative is False:
+				break
+		return associative
 
+	def create_subtable(self, i):
+		n = self.size
+		subtable = [[0 for x in xrange(n)] for y in xrange(n)] 
+		for x in xrange(0, n):
+			val = self.operation_table[i][x]
+			for m in xrange(0, n):
+				subtable[m][x] = self.operation_table[m][val]
+		return subtable
 
-filename = raw_input("Enter file's name: ")
-n = raw_input("Enter number of element of the binary operation: ")
-n = int(n)
 
 binary = BinaryOperation()
-binary.generate_binary_opertion(filename, n)
-binary.create_table(filename)
-print(binary.operation_table)
+binary.size = 5
+binary.create_table('la.txt')
+ass = binary.is_associative()
+print(ass)
+print("\n")
