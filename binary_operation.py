@@ -1,5 +1,6 @@
 from sys import argv
 from random import randint
+from math import log
 class BinaryOperation:
 	def __init__(self):
 		self.operation_table = []
@@ -68,6 +69,7 @@ class BinaryOperation:
 		return associative
 
 	def create_subtable(self, i):
+		#Create a table of binary operation x*i*y with a fixed i
 		n = self.size
 		subtable = [[0 for x in xrange(n)] for y in xrange(n)] 
 		for x in xrange(0, n):
@@ -75,11 +77,78 @@ class BinaryOperation:
 			for m in xrange(0, n):
 				subtable[m][x] = self.operation_table[m][val]
 		return subtable
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+#The following part is for optimized algorithm for checking whether an operation is associative
+#The algortihm run in O(n^2 log n) time-complexity
+#If the method return False, the considered binary operation dont have associativity
+#If the method return True, the probality of error is 1/n (where n is the size of the table)
+	def take_random(self):
+		n = self.size
+		a = [0 for x in xrange(n)]
+		for i in xrange(n):
+			a[i] = randint(0, 1)
+		return a
 
+	def op(self, a, b):
+		n = self.size
+		tmp = [0 for x in xrange(n)]
+		for i in xrange(n-1):
+			if a[i] == 1:
+				for j in xrange(n-1):
+					if b[j] == 1:
+						val = self.operation_table[i][j]
+						if tmp[val] == 0:
+							tmp[val] = 1
+						else:
+							tmp[val] = 0
+		return tmp
 
+	def check_associative(self):
+		n = self.size
+		number_of_loop = 7*log(n)
+		count = 0
+		while count < number_of_loop:
+			a = self.take_random()
+			b = self.take_random()
+			c = self.take_random()
+			var1 = self.op(self.op(a, b), c)
+			var2 = self.op(a, self.op(b, c))
+			if var1 != var2:
+				return False
+			else:
+				return True
+
+#End Algorithm Part
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+
+creating_new_file = raw_input("Do you want to generate a new file containing binary operation (Y/N) ?")
 binary = BinaryOperation()
-binary.size = 5
-binary.create_table('la.txt')
-ass = binary.is_associative()
-print(ass)
-print("\n")
+if creating_new_file == 'Y':
+	filename = raw_input("Enter file's name: ")
+	size = raw_input("Enter number of element (i.e enter 8 should give a binary operation table with size 8*8) :")
+	size = int(size)
+	binary.generate_binary_opertion(filename, size)
+	binary.create_table(filename)
+	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
+	if which_to_run == 'L':
+		result = binary.is_associative()
+		print(result)
+	else:
+		result = binary.check_associative()
+		print(result)
+else:
+	filename = raw_input("Enter an existing file containing a matrix: ")
+	size = raw_input("Enter number of rows in the file: ")
+	size = int(size)
+	binary.size = size
+	binary.create_table('./'+filename)
+	print(binary.operation_table)
+	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
+	if which_to_run == 'L':
+		result = binary.is_associative()
+		print(result)
+	else:
+		result = binary.check_associative()
+		print(result)
