@@ -25,6 +25,46 @@ class BinaryOperation:
 		target.close()
 		self.size = n
 
+	def gen(self, filename, n):
+		self.size = n
+		column = 0
+		row = 0
+		target = open(filename, "w")
+		target.write("    ")
+		for i in xrange(n):
+			target.write(str(i))
+			if i >= 100:
+				target.write(" ")
+			elif i >= 10:
+				target.write("  ")
+			else:
+				target.write("   ")
+		target.write("\n")
+		while row < n:
+			target.write(str(row))
+			if row >= 100:
+				target.write(" ")
+			elif row >= 10:
+				target.write("  ")
+			else:
+				target.write("   ")
+			while column < n:
+				val = randint(0, n-1)
+				string = str(val)
+				target.write(string)
+				if val >= 100:
+					target.write(" ")
+				elif val >= 10:
+					target.write("  ")
+				else:
+					target.write("   ")
+				column = column + 1
+			row = row + 1
+			target.write("\n")
+			column = 0
+		target.close()
+
+
 	def create_table(self, filename):
 		#A subroutine to put data in filename to a dict type opertation_table
 		file = open(filename, "r")
@@ -129,15 +169,15 @@ if creating_new_file == 'Y':
 	filename = raw_input("Enter file's name: ")
 	size = raw_input("Enter number of element (i.e enter 8 should give a binary operation table with size 8*8) :")
 	size = int(size)
-	binary.generate_binary_opertion(filename, size)
-	binary.create_table(filename)
-	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
-	if which_to_run == 'L':
-		result = binary.is_associative()
-		print(result)
-	else:
-		result = binary.check_associative()
-		print(result)
+	binary.gen(filename, size)
+	#binary.create_table(filename)
+	#which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
+	#if which_to_run == 'L':
+	#	result = binary.is_associative()
+	#	print(result)
+	#else:
+	#	result = binary.check_associative()
+	#	print(result)
 else:
 	filename = raw_input("Enter an existing file containing a matrix: ")
 	size = raw_input("Enter number of rows in the file: ")
