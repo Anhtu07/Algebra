@@ -26,6 +26,7 @@ class BinaryOperation:
 		self.size = n
 
 	def gen(self, filename, n):
+		#better version of generator with format n should be smaller than 1000
 		self.size = n
 		column = 0
 		row = 0
@@ -85,6 +86,36 @@ class BinaryOperation:
 					tmp = []
 			self.operation_table.append(row)
 			c = c + 1
+
+	def create(self, filename):
+		#other version of create_table for reading file with format from gen method
+		file = open(filename, "r")
+		array = file.readlines()
+		n = self.size
+		c = 1
+		nc = 0
+		while c <= n:
+			row = []
+			tmp = []
+			count = 0
+			for char in array[c]:
+				nc = nc + 1
+				if count < 4:
+					count = count + 1
+					nc = 0
+					pass
+				elif char is not ' ':
+					tmp.append(char)
+				elif nc == 4:
+					number = ''
+					for ch in tmp:
+						number = number + ch
+					row.append(int(number))
+					tmp = []
+					nc = 0
+			self.operation_table.append(row)
+			c = c + 1
+
 
 	def is_associative(self):
 		#Check a binary opertation whether it is associative using Light's algorithm
@@ -170,7 +201,8 @@ if creating_new_file == 'Y':
 	size = raw_input("Enter number of element (i.e enter 8 should give a binary operation table with size 8*8) :")
 	size = int(size)
 	binary.gen(filename, size)
-	#binary.create_table(filename)
+	binary.create(filename)
+	print(binary.operation_table)
 	#which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
 	#if which_to_run == 'L':
 	#	result = binary.is_associative()
