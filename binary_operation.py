@@ -91,7 +91,8 @@ class BinaryOperation:
 		#other version of create_table for reading file with format from gen method
 		file = open(filename, "r")
 		array = file.readlines()
-		n = self.size
+		n = (len(array[0]) - 4)/4
+		self.size = n
 		c = 1
 		nc = 0
 		while c <= n:
@@ -130,13 +131,8 @@ class BinaryOperation:
 				for m in xrange(0,n):
 					if subtable[x][m] != self.operation_table[val][m]:
 						result = [x, i, m]
-						print(result)
-						associative = False
-						break
-				if associative is False:
-					break
-			if associative is False:
-				break
+						print("non-associative")
+						return result
 		return associative
 
 	def create_subtable(self, i):
@@ -148,8 +144,7 @@ class BinaryOperation:
 			for m in xrange(0, n):
 				subtable[m][x] = self.operation_table[m][val]
 		return subtable
-#---------------------------------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------------------------------
+
 #The following part is for optimized algorithm for checking whether an operation is associative
 #The algortihm run in O(n^2 log n) time-complexity
 #If the method return False, the considered binary operation dont have associativity
@@ -203,20 +198,16 @@ if creating_new_file == 'Y':
 	binary.gen(filename, size)
 	binary.create(filename)
 	print(binary.operation_table)
-	#which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
-	#if which_to_run == 'L':
-	#	result = binary.is_associative()
-	#	print(result)
-	#else:
-	#	result = binary.check_associative()
-	#	print(result)
+	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
+	if which_to_run == 'L':
+		result = binary.is_associative()
+		print(result)
+	else:
+		result = binary.check_associative()
+		print(result)
 else:
-	filename = raw_input("Enter an existing file containing a matrix: ")
-	size = raw_input("Enter number of rows in the file: ")
-	size = int(size)
-	binary.size = size
-	binary.create_table('./'+filename)
-	print(binary.operation_table)
+	filename = raw_input("Enter an existing file: ")
+	binary.create('./'+filename)
 	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
 	if which_to_run == 'L':
 		result = binary.is_associative()
