@@ -1,6 +1,11 @@
 from sys import argv
 from random import randint
 from math import log
+import sys
+# Python 3 doesn't have xrange, and range behaves like xrange.
+if sys.version_info >= (3,):
+    xrange = range
+
 class BinaryOperation:
 	def __init__(self):
 		self.operation_table = []
@@ -133,6 +138,7 @@ class BinaryOperation:
 						result = [x, i, m]
 						print("non-associative")
 						return result
+		print("associative")
 		return associative
 
 	def create_subtable(self, i):
@@ -145,9 +151,35 @@ class BinaryOperation:
 				subtable[m][x] = self.operation_table[m][val]
 		return subtable
 
+	def id_element(self):
+		#Return the identity element if exists
+		n = self.size
+		tmp = []
+		i = 0
+		row = None
+		for j in xrange(0, n):
+			tmp.append(j)
+		while i < n and row is None:
+			for m in xrange(0, n):
+				if self.operation_table[i][m] == tmp[m]:
+					row = i
+				else:
+					row = None
+					break
+			i = i + 1
+		if row is None:
+			return row
+		
+		for j in xrange(0, n):
+			if self.operation_table[j][row] != j:
+				return None
+		return row
+
+
+
 #The following part is for optimized algorithm for checking whether an operation is associative
 #The algortihm run in O(n^2 log n) time-complexity
-#If the method return False, the considered binary operation dont have associativity
+#If the method return False, the considered binary operation doesn't have associativity
 #If the method return True, the probality of error is 1/n (where n is the size of the table)
 	def take_random(self):
 		n = self.size
@@ -191,13 +223,14 @@ class BinaryOperation:
 
 creating_new_file = raw_input("Do you want to generate a new file containing binary operation (Y/N) ?")
 binary = BinaryOperation()
+
 if creating_new_file == 'Y':
 	filename = raw_input("Enter file's name: ")
 	size = raw_input("Enter number of element (i.e enter 8 should give a binary operation table with size 8*8) :")
 	size = int(size)
 	binary.gen(filename, size)
 	binary.create(filename)
-	print(binary.operation_table)
+	print(binary.id_element())
 	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
 	if which_to_run == 'L':
 		result = binary.is_associative()
@@ -208,6 +241,7 @@ if creating_new_file == 'Y':
 else:
 	filename = raw_input("Enter an existing file: ")
 	binary.create('./'+filename)
+	print(binary.id_element())
 	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
 	if which_to_run == 'L':
 		result = binary.is_associative()
@@ -215,3 +249,5 @@ else:
 	else:
 		result = binary.check_associative()
 		print(result)
+
+
