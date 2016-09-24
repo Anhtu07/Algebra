@@ -127,7 +127,6 @@ class BinaryOperation:
 		#Check a binary opertation whether it is associative using Light's algorithm
 		#Return true if the operation is associative
 		#Return false and print out a triple that dissatisfies associative property
-		associative = True
 		n = self.size
 		for i in xrange(0,n):
 			subtable = self.create_subtable(i)
@@ -136,10 +135,8 @@ class BinaryOperation:
 				for m in xrange(0,n):
 					if subtable[x][m] != self.operation_table[val][m]:
 						result = [x, i, m]
-						print("non-associative")
-						return result
-		print("associative")
-		return associative
+						return False
+		return True
 
 	def create_subtable(self, i):
 		#Create a table of binary operation x*i*y with a fixed i
@@ -169,11 +166,35 @@ class BinaryOperation:
 			i = i + 1
 		if row is None:
 			return row
-		
+
 		for j in xrange(0, n):
 			if self.operation_table[j][row] != j:
 				return None
 		return row
+
+	def inverse(self):
+		i = self.id_element()
+		n = self.size
+		result = [0 for x in xrange(n)]
+		if i is None:
+			return None
+		for x in xrange(0, n):
+			for y in xrange(0, n):
+				if self.operation_table[x][y] == i and self.operation_table[y][x] == i:
+					result[x] = 1
+					result[y] = 1
+					break
+		for e in result:
+			if e == 0:
+				return False
+		return True
+
+	def is_group(self):
+		if self.is_associative() and (self.id_element() is not None) and self.inverse():
+			return True
+		else:
+			return False
+
 
 
 
@@ -221,33 +242,27 @@ class BinaryOperation:
 #---------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------
 
-creating_new_file = raw_input("Do you want to generate a new file containing binary operation (Y/N) ?")
+creating_new_file = raw_input("Generating random operation table(Y/N) ?")
 binary = BinaryOperation()
 
 if creating_new_file == 'Y':
 	filename = raw_input("Enter file's name: ")
-	size = raw_input("Enter number of element (i.e enter 8 should give a binary operation table with size 8*8) :")
+	size = raw_input("Enter number of element :")
 	size = int(size)
 	binary.gen(filename, size)
 	binary.create(filename)
-	print(binary.id_element())
-	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
-	if which_to_run == 'L':
-		result = binary.is_associative()
-		print(result)
-	else:
-		result = binary.check_associative()
-		print(result)
+	is_continue = raw_input("Continue program (Y/N) ?")
+	if is_continue:
+		if binary.is_group():
+			print("is group")
+		else:
+			print("is not group")
 else:
 	filename = raw_input("Enter an existing file: ")
 	binary.create('./'+filename)
-	print(binary.id_element())
-	which_to_run = raw_input("Choose algorithm to run (type L for Light's algorithm/ type R for randomized algorithm: ")
-	if which_to_run == 'L':
-		result = binary.is_associative()
-		print(result)
+	if binary.is_group():
+		print("is group")
 	else:
-		result = binary.check_associative()
-		print(result)
+		print("is not group")
 
 
